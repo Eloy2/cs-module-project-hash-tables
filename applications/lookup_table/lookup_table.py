@@ -1,3 +1,5 @@
+import random # original clone of file did not have this
+import math # original clone of file did not have this
 # Your code here
 
 
@@ -9,13 +11,19 @@ def slowfun_too_slow(x, y):
 
     return v
 
+lookup_table = {}
+
 def slowfun(x, y):
     """
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
     """
-    # Your code here
-
+    if (x, y) in lookup_table:
+        return lookup_table[(x,y)]
+    else:
+        v = slowfun_too_slow(x, y)
+        lookup_table[(x,y)] = v
+        return v
 
 
 # Do not modify below this line!

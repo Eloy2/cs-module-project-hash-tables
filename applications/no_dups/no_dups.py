@@ -1,5 +1,12 @@
 def no_dups(s):
-    # Your code here
+    table = {}
+    final = []
+    for i in s.split(" "):
+        if i not in table:
+            table[i] = i
+            final.append(i)
+    separator = " "
+    return separator.join(final)
 
 
 
