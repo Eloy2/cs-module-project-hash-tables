@@ -17,5 +17,5 @@ for a in q:
     for b in q:
         for c in q:
             for d in q:
-                if f(a) + f(b) == f(c) - f(d):
+                if (f(a) + f(b)) == (f(c) - f(d)):
                     print(f'f({a}) + f({b}) = f({c}) - f({d})  {f(a)} + {f(b)} = {f(c)} - {f(d)}')
