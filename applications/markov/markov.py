@@ -46,6 +46,6 @@ for i in range(5):
             next = random.choice(list(table.keys()))
     sentence.append(next)
     print(" ".join(sentence))
-    # Tried a million things to get this to work. This code works and meets MVP becuase MVP said.
+    # Tried a million things to get this to work. This code works and meets MVP becuase MVP said:
     # "There is no test file for this. Just see if it makes good nonsense."
     # and it prints out random nonsens sentences so it meets MVP
