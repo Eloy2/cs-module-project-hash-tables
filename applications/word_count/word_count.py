@@ -1,5 +1,16 @@
 def word_count(s):
-    # Your code here
+    table = {}
+
+    for i in s:
+        if i in "\" : ; , . - + = / \ | [ ] { } ( ) * ^ &":
+            s = s.replace(i, " ")
+    for i in s.split():
+        if i.lower() in table:
+            table[i.lower()] += 1
+        else:
+            table[i.lower()] = 1
+
+    return table
 
 
 

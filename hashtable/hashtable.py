@@ -21,7 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.storage = [None] * self.capacity
+        self.number_of_items = 0
 
 
     def get_num_slots(self):
@@ -34,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +45,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        load_factor = self.number_of_items / self.capacity
+        return load_factor
 
 
     def fnv1(self, key):
@@ -54,6 +57,7 @@ class HashTable:
         """
 
         # Your code here
+        pass
 
 
     def djb2(self, key):
@@ -62,8 +66,12 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
 
+        for x in key:
+            hash = (( hash << 5) + hash) + ord(x)
+
+        return hash & 0xFFFFFFFF
 
     def hash_index(self, key):
         """
@@ -81,7 +89,28 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        value_found = False # flag to check wether or not the value was found in the linked list
+        index = self.hash_index(key)
+        if self.storage[index] is not None:
+            curr_node = self.storage[index]
+            while curr_node is not None:
+                if curr_node.key == key:
+                    curr_node.value = value
+                    value_found = True
+                curr_node = curr_node.next
+            if value_found == False:
+                new_entry = HashTableEntry(key, value) # create a new entry
+                curr_head = self.storage[index] # get the current head
+                new_entry.next = curr_head # make the pointer of the new entry point to the current head
+                self.storage[index] = new_entry # make the new entry the new head
+                self.number_of_items += 1 # Update number of items in the hash_table
+        else:
+            self.storage[index] = HashTableEntry(key, value)
+            self.number_of_items += 1 # Update number of items in the hash_table
+        # check load factor
+        load_factor = self.get_load_factor()
+        if load_factor > 0.7:
+            self.resize(self.capacity * 2)
 
 
     def delete(self, key):
@@ -92,7 +121,22 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        key_found = False
+        index = self.hash_index(key)
+        prev = None
+        curr_node = self.storage[index]
+        while curr_node is not None:
+            if curr_node.key == key:
+                if prev is None: # if the node to delete is the head
+                    self.storage[index] = curr_node.next
+                else:
+                    prev.next = curr_node.next
+                key_found = True
+                self.number_of_items -= 1 # Update number of items in the hash_table
+            prev = curr_node
+            curr_node = curr_node.next
+        if key_found == False:
+            print("Warning: Key not found.")
 
 
     def get(self, key):
@@ -103,8 +147,13 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        index = self.hash_index(key)
+        curr_node = self.storage[index]
+        while curr_node is not None:
+            if curr_node.key == key:
+                return curr_node.value
+            curr_node = curr_node.next
+        return None
 
     def resize(self, new_capacity):
         """
@@ -113,8 +162,36 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        self.capacity = new_capacity
+        new_number_of_items = 0
+        prev_storage = self.storage
+        new_storage = [None] * new_capacity
+        for prev_item in prev_storage:
+            if prev_item is not None: 
+                if prev_item.next is not None:
+                    while prev_item is not None:
+                        if new_storage[self.hash_index(prev_item.key)] is not None:
+                            new_entry = HashTableEntry(prev_item.key, prev_item.value)
+                            curr_head = new_storage[self.hash_index(prev_item.key)]
+                            new_entry.next = curr_head
+                            new_storage[self.hash_index(prev_item.key)] = new_entry
+                            new_number_of_items += 1
+                        else:
+                            new_storage[self.hash_index(prev_item.key)] = HashTableEntry(prev_item.key, prev_item.value)
+                            new_number_of_items += 1
+                        prev_item = prev_item.next
+                else:
+                    if new_storage[self.hash_index(prev_item.key)] is not None:
+                        new_entry = HashTableEntry(prev_item.key, prev_item.value)
+                        curr_head = new_storage[self.hash_index(prev_item.key)]
+                        new_entry.next = curr_head
+                        new_storage[self.hash_index(prev_item.key)] = new_entry
+                        new_number_of_items += 1
+                    else:
+                        new_storage[self.hash_index(prev_item.key)] = HashTableEntry(prev_item.key, prev_item.value)
+                        new_number_of_items += 1
+        self.storage = new_storage
+        self.number_of_items = new_number_of_items
 
 
 if __name__ == "__main__":
